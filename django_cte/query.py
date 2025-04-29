@@ -141,9 +141,7 @@ class CTECompiler(object):
             setattr(query, explain_attribute, None)
 
         if ctes:
-            # Always use WITH RECURSIVE
-            # https://www.postgresql.org/message-id/13122.1339829536%40sss.pgh.pa.us
-            sql.extend(["WITH RECURSIVE", ", ".join(ctes)])
+            sql.extend(["WITH", ", ".join(ctes)])
         base_sql, base_params = as_sql()
 
         if explain_query_or_info:

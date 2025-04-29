@@ -38,22 +38,6 @@ class With(object):
     def __repr__(self):
         return "<With {}>".format(self.name)
 
-    @classmethod
-    def recursive(cls, make_cte_queryset, name="cte", materialized=False):
-        """Recursive Common Table Expression: `WITH RECURSIVE ...`
-
-        :param make_cte_queryset: Function taking a single argument (a
-        not-yet-fully-constructed cte object) and returning a `QuerySet`
-        object. The returned `QuerySet` normally consists of an initial
-        statement unioned with a recursive statement.
-        :param name: See `name` parameter of `__init__`.
-        :param materialized: See `materialized` parameter of `__init__`.
-        :returns: The fully constructed recursive cte object.
-        """
-        cte = cls(None, name, materialized)
-        cte.query = make_cte_queryset(cte).query
-        return cte
-
     def join(self, model_or_queryset, *filter_q, **filter_kw):
         """Join this CTE to the given model or queryset
 
