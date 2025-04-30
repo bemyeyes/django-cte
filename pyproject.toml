@@ -1,5 +1,5 @@
 [project]
-name = "django-cte"
+name = "bemyeyes-django-cte"
 description = "Common Table Expressions (CTE) for Django"
 authors = [{name = "Daniel Miller", email = "millerdev@gmail.com"}]
 license = {file = "LICENSE"}
@@ -38,7 +38,7 @@ test = [
 ]
 
 [project.urls]
-Home = "https://github.com/dimagi/django-cte"
+Home = "https://github.com/bemyeyes/bemyeyes-django-cte"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
