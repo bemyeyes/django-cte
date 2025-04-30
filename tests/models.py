@@ -1,30 +1,26 @@
+from bemyeyes_django_cte import CTEManager, CTEQuerySet
 from django.db.models import (
     CASCADE,
-    Model,
     AutoField,
     CharField,
     ForeignKey,
     IntegerField,
+    Model,
     TextField,
 )
 
-from django_cte import CTEManager, CTEQuerySet
-
 
 class LT40QuerySet(CTEQuerySet):
-
     def lt40(self):
         return self.filter(amount__lt=40)
 
 
 class LT30QuerySet(CTEQuerySet):
-
     def lt30(self):
         return self.filter(amount__lt=30)
 
 
 class LT25QuerySet(CTEQuerySet):
-
     def lt25(self):
         return self.filter(amount__lt=25)
 
@@ -64,24 +60,28 @@ class Order(Model):
 class OrderFromLT40(Order):
     class Meta:
         proxy = True
+
     objects = CTEManager.from_queryset(LT40QuerySet)()
 
 
 class OrderLT40AsManager(Order):
     class Meta:
         proxy = True
+
     objects = LT40QuerySet.as_manager()
 
 
 class OrderCustomManagerNQuery(Order):
     class Meta:
         proxy = True
+
     objects = LTManager.from_queryset(LT25QuerySet)()
 
 
 class OrderCustomManager(Order):
     class Meta:
         proxy = True
+
     objects = LTManager()
 
 

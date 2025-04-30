@@ -53,11 +53,11 @@ class NonCteQueries(TestCase):
 
 
 class WindowFunctions(TestCase):
-
     def test_heterogeneous_filter_in_cte(self):
         if django.VERSION < (4, 2):
             raise SkipTest("feature added in Django 4.2")
-        from django_cte import With
+        from bemyeyes_django_cte import With
+
         cte = With(
             Order.objects.annotate(
                 region_amount_rank=Window(
@@ -79,8 +79,7 @@ class WindowFunctions(TestCase):
         except (OperationalError, ProgrammingError) as err:
             if "cte.region_id" in str(err):
                 raise SkipTest(
-                    "window function auto-aliasing breaks CTE "
-                    "column references"
+                    "window function auto-aliasing breaks CTE column references"
                 )
             raise
         assert 0, "unexpected pass"

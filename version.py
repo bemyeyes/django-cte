@@ -1,4 +1,5 @@
 """Check or update version in __init__.py"""
+
 import re
 import sys
 from datetime import datetime
@@ -16,23 +17,24 @@ def main(argv=sys.argv):
 
 
 def check(ref):
-    import django_cte
+    import bemyeyes_django_cte
+
     if not ref.startswith("refs/tags/v"):
         sys.exit(f"unexpected ref: {ref}")
     version = ref.removeprefix("refs/tags/v")
-    if version != django_cte.__version__:
-        sys.exit(f"version mismatch: {version} != {django_cte.__version__}")
+    if version != bemyeyes_django_cte.__version__:
+        sys.exit(f"version mismatch: {version} != {bemyeyes_django_cte.__version__}")
 
 
 def update():
     """Add a timestamped dev version qualifier to the current version"""
-    path = Path(__file__).parent / "django_cte/__init__.py"
+    path = Path(__file__).parent / "bemyeyes_django_cte/__init__.py"
     vexpr = re.compile(r"""(?<=^__version__ = )['"](.+)['"]$""", flags=re.M)
     with open(path, "r+") as file:
         text = file.read()
         match = vexpr.search(text)
         if not match:
-            sys.exit("django_cte.__version__ not found")
+            sys.exit("bemyeyes_django_cte.__version__ not found")
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         version = f"{match.group(1)}.dev{timestamp}"
         print("new version:", version)

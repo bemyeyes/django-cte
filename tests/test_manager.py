@@ -1,18 +1,17 @@
+from bemyeyes_django_cte import CTEManager, CTEQuerySet, With
 from django.db.models.expressions import F
 from django.db.models.query import QuerySet
 from django.test import TestCase
 
-from django_cte import With, CTEQuerySet, CTEManager
-
 from .models import (
-    Order,
-    OrderFromLT40,
-    OrderLT40AsManager,
-    OrderCustomManagerNQuery,
-    OrderCustomManager,
+    LT25QuerySet,
     LT40QuerySet,
     LTManager,
-    LT25QuerySet,
+    Order,
+    OrderCustomManager,
+    OrderCustomManagerNQuery,
+    OrderFromLT40,
+    OrderLT40AsManager,
 )
 
 
@@ -28,10 +27,8 @@ class TestCTE(TestCase):
         self.assertEqual(type(OrderLT40AsManager.objects.all()), LT40QuerySet)
 
     def test_cte_queryset_correct_manager_n_from_queryset(self):
-        self.assertIsInstance(
-            OrderCustomManagerNQuery._default_manager, LTManager)
-        self.assertEqual(type(
-            OrderCustomManagerNQuery.objects.all()), LT25QuerySet)
+        self.assertIsInstance(OrderCustomManagerNQuery._default_manager, LTManager)
+        self.assertEqual(type(OrderCustomManagerNQuery.objects.all()), LT25QuerySet)
 
     def test_cte_create_manager_from_non_cteQuery(self):
         class BrokenQuerySet(QuerySet):
@@ -49,9 +46,9 @@ class TestCTE(TestCase):
         self.assertEqual(type(OrderFromLT40.objects.all()), LT40QuerySet)
 
         cte = With(
-            OrderFromLT40.objects
-            .annotate(region_parent=F("region__parent_id"))
-            .filter(region__parent_id="sun")
+            OrderFromLT40.objects.annotate(region_parent=F("region__parent_id")).filter(
+                region__parent_id="sun"
+            )
         )
         orders = (
             cte.queryset()
@@ -62,25 +59,28 @@ class TestCTE(TestCase):
         print(orders.query)
 
         data = [(x.region_id, x.amount, x.region_parent) for x in orders]
-        self.assertEqual(data, [
-            ("earth", 30, "sun"),
-            ("earth", 31, "sun"),
-            ("earth", 32, "sun"),
-            ("earth", 33, "sun"),
-            ('mercury', 10, 'sun'),
-            ('mercury', 11, 'sun'),
-            ('mercury', 12, 'sun'),
-            ('venus', 20, 'sun'),
-            ('venus', 21, 'sun'),
-            ('venus', 22, 'sun'),
-            ('venus', 23, 'sun'),
-        ])
+        self.assertEqual(
+            data,
+            [
+                ("earth", 30, "sun"),
+                ("earth", 31, "sun"),
+                ("earth", 32, "sun"),
+                ("earth", 33, "sun"),
+                ("mercury", 10, "sun"),
+                ("mercury", 11, "sun"),
+                ("mercury", 12, "sun"),
+                ("venus", 20, "sun"),
+                ("venus", 21, "sun"),
+                ("venus", 22, "sun"),
+                ("venus", 23, "sun"),
+            ],
+        )
 
     def test_cte_queryset_with_custom_queryset(self):
         cte = With(
-            OrderCustomManagerNQuery.objects
-            .annotate(region_parent=F("region__parent_id"))
-            .filter(region__parent_id="sun")
+            OrderCustomManagerNQuery.objects.annotate(
+                region_parent=F("region__parent_id")
+            ).filter(region__parent_id="sun")
         )
         orders = (
             cte.queryset()
@@ -91,20 +91,21 @@ class TestCTE(TestCase):
         print(orders.query)
 
         data = [(x.region_id, x.amount, x.region_parent) for x in orders]
-        self.assertEqual(data, [
-            ('mercury', 10, 'sun'),
-            ('mercury', 11, 'sun'),
-            ('mercury', 12, 'sun'),
-            ('venus', 20, 'sun'),
-            ('venus', 21, 'sun'),
-            ('venus', 22, 'sun'),
-            ('venus', 23, 'sun'),
-        ])
+        self.assertEqual(
+            data,
+            [
+                ("mercury", 10, "sun"),
+                ("mercury", 11, "sun"),
+                ("mercury", 12, "sun"),
+                ("venus", 20, "sun"),
+                ("venus", 21, "sun"),
+                ("venus", 22, "sun"),
+                ("venus", 23, "sun"),
+            ],
+        )
 
     def test_cte_queryset_with_deferred_loading(self):
-        cte = With(
-            OrderCustomManagerNQuery.objects.order_by("id").only("id")[:1]
-        )
+        cte = With(OrderCustomManagerNQuery.objects.order_by("id").only("id")[:1])
         orders = cte.queryset().with_cte(cte)
         print(orders.query)
 
