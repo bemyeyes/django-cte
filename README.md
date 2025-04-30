@@ -12,6 +12,13 @@ pip install bemyeyes-django-cte
 
 Fork of [django-cte documentation](https://dimagi.github.io/django-cte/) that doesn't support recursive CTEs
 
-## Publishing a new verison to PyPI
+## Publishing a new version to PyPI
 
-Manual process
+```
+[create new tag]
+uv pip install build
+uv run python -m build
+uv pip install twine
+twine check dist/*
+twine upload dist/*
+```
