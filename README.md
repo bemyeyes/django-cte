@@ -17,8 +17,9 @@ Fork of [django-cte documentation](https://dimagi.github.io/django-cte/) that do
 ```
 [create new tag]
 uv pip install build
+rm -rf dist/ build/
 uv run python -m build
 uv pip install twine
-twine check dist/*
-twine upload dist/*
+uv run twine check dist/*
+uv run twine upload dist/*
 ```
